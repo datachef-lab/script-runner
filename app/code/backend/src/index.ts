@@ -8,7 +8,7 @@ import app from "./app.js";
 import "tsconfig-paths/register";
 import { logError, handleShutdown } from "./utils/server-helpers.js";
 import { logger } from "./utils/logger.js";
-import chalk from "chalk/index.js";
+import chalk from "chalk";
 
 /**
  * Define the port for the server to listen on.

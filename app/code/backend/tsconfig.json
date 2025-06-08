@@ -3,7 +3,7 @@
         "target": "ES6",
         "types": ["node", "express"],
         "typeRoots": ["./node_modules/@types", "./src/types"],
-        "module": "CommonJS",
+        "module": "ES2020",
         "moduleResolution": "node",
         "outDir": "./dist",
         "rootDir": "./src",

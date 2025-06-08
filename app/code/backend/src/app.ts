@@ -12,6 +12,7 @@ import { corsOptions } from "./config/cors-options";
 // import { Server } from 'socket.io';
 
 import { approvalRouter } from "./routes/college-approval.route";
+import { webScrapeMarksRouter } from "./routes/web-scrape-marks.route";
 
 // const DOCUMENT_PATH = process.env.DOCUMENT_PATH!;
 
@@ -122,6 +123,8 @@ app.get("/routes", (req, res) => {
 });
 
 app.use("/college-approval", approvalRouter);
+
+app.use("/web-scrape-marks", webScrapeMarksRouter);
 
 
 app.all("*", (req: Request, res: Response) => {

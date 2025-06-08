@@ -1,0 +1,13 @@
+{
+  "name": "merge-subjects-to-columns",
+  "version": "1.0.0",
+  "description": "This script will merge all the subjects for every entries to separate columns",
+  "main": "index.js",
+  "scripts": {
+    "merge-subjects": "cd code && node src/index.js",
+    "dev": "nodemon src/index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC"
+}

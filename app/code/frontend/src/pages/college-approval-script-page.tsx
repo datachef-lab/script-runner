@@ -1,8 +1,8 @@
-import { ScriptPage } from "@/components/script-page";
+import { ScriptLayout } from "@/components/layouts/script-layout";
 
 export default function CollegeApprovalScriptPage() {
   return (
-    <ScriptPage
+    <ScriptLayout
       title="College Approval Script"
       description="Automates the process of approving college applications by processing and validating application data."
       scriptName="college-approval"

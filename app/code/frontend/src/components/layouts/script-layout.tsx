@@ -1,19 +1,19 @@
 import { useState } from "react";
-import { Button } from "./ui/button";
-import { Card } from "./ui/card";
+import { Button } from "../ui/button";
+import { Card } from "../ui/card";
 import { Play, StopCircle, Upload, FileText, Download, Info } from "lucide-react";
-import { Input } from "./ui/input";
-import { Label } from "./ui/label";
+import { Input } from "../ui/input";
+import { Label } from "../ui/label";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "./ui/dialog";
+} from "../ui/dialog";
 import * as XLSX from 'xlsx';
 
-interface ScriptPageProps {
+interface ScriptLayoutProps {
   title: string;
   description: string;
   scriptName: string;
@@ -22,14 +22,14 @@ interface ScriptPageProps {
   templateUrl?: string;
 }
 
-export function ScriptPage({ 
+export function ScriptLayout({ 
   title, 
   description, 
   scriptName,
   acceptedFileTypes = ".xlsx,.xls,.csv,.txt",
   steps = [],
   templateUrl
-}: ScriptPageProps) {
+}: ScriptLayoutProps) {
   const [isRunning, setIsRunning] = useState(false);
   const [output, setOutput] = useState<string[]>([]);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);

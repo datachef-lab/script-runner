@@ -1,11 +1,12 @@
 import express, { Request, Response, RequestHandler } from 'express';
-import { spawn } from 'child_process';
+import { spawn, ChildProcess } from 'child_process';
 import path from 'path';
 import fs from 'fs';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 import { ApiResponse } from "../utils/api-response";
 import { uploadExcelMiddleware } from '../middlewares/upload.middleware';
+import { io } from '../app';
 
 // Get the directory name
 const __filename = fileURLToPath(import.meta.url);
@@ -16,6 +17,12 @@ const SCRIPT_PATH = path.resolve(__dirname, "../../../scripts/WEB-SCRAPE MARKS")
 const DATA_PATH = path.resolve(__dirname, "../../../../data");
 
 const router = express.Router();
+
+// Variable to store the child process instance
+let pythonProcess: ChildProcess | null = null;
+
+// Define the Python executable path explicitly
+const PYTHON_EXECUTABLE = 'D:\\DataChef\\script-runner\\app\\code\\.venv\\Scripts\\python.exe';
 
 // Define the request body interface
 interface WebScrapeRequest {
@@ -78,7 +85,6 @@ router.post('/', uploadExcelMiddleware, (async (req: Request, res: Response) => 
 
         // Prepare command line arguments
         const args = [
-            pythonScriptPath,
             '--input', inputFilePath,
             '--output', outputFilePath,
             '--log', logFilePath,
@@ -94,12 +100,15 @@ router.post('/', uploadExcelMiddleware, (async (req: Request, res: Response) => 
         // if (debug) args.push('--debug');
 
         // Spawn Python process
-        const pythonProcess = spawn('python', args);
+        pythonProcess = spawn(PYTHON_EXECUTABLE, [pythonScriptPath, ...args], {
+            env: { ...process.env, PYTHONUNBUFFERED: '1' },
+        });
 
         // Handle client disconnection
         req.on('close', () => {
             if (!res.writableEnded) {
-                pythonProcess.kill();
+                pythonProcess?.kill();
+                pythonProcess = null;
                 res.end();
             }
         });
@@ -108,22 +117,26 @@ router.post('/', uploadExcelMiddleware, (async (req: Request, res: Response) => 
         let output = '';
         let error = '';
 
-        pythonProcess.stdout.on('data', (data) => {
-            const chunk = data.toString();
-            output += chunk;
-            // Send progress updates to client
-            res.write(chunk);
-        });
+        if (pythonProcess) {
+            const currentPythonProcess = pythonProcess;
 
-        pythonProcess.stderr.on('data', (data) => {
-            const chunk = data.toString();
-            error += chunk;
-            // Send error updates to client
-            res.write(chunk);
-        });
+            currentPythonProcess.stdout?.on('data', (data) => {
+                const chunk = data.toString();
+                output += chunk;
+                // Emit real-time output to connected clients
+                io.emit('script-output', { type: 'stdout', data: chunk });
+            });
+
+            currentPythonProcess.stderr?.on('data', (data) => {
+                const chunk = data.toString();
+                error += chunk;
+                // Emit real-time errors to connected clients
+                io.emit('script-output', { type: 'stderr', data: chunk });
+            });
+        }
 
         // Handle process completion
-        pythonProcess.on('close', (code) => {
+        pythonProcess?.on('close', (code) => {
             if (code === 0) {
                 // Process completed successfully
                 const response = {
@@ -133,6 +146,8 @@ router.post('/', uploadExcelMiddleware, (async (req: Request, res: Response) => 
                     outputFile: path.basename(outputFilePath),
                     logFile: path.basename(logFilePath)
                 };
+                // Emit completion event
+                io.emit('script-complete', response);
                 res.end(JSON.stringify(response));
             } else {
                 // Process failed
@@ -142,8 +157,11 @@ router.post('/', uploadExcelMiddleware, (async (req: Request, res: Response) => 
                     error: error,
                     code: code
                 };
+                // Emit completion event
+                io.emit('script-complete', response);
                 res.end(JSON.stringify(response));
             }
+            pythonProcess = null; // Clear the process reference on close
         });
 
     } catch (error) {
@@ -151,5 +169,16 @@ router.post('/', uploadExcelMiddleware, (async (req: Request, res: Response) => 
         res.status(500).json({ error: 'Internal server error' });
     }
 }) as RequestHandler);
+
+router.post('/terminate', (req: Request, res: Response) => {
+    if (pythonProcess) {
+        console.log("Attempting to terminate Python script...");
+        pythonProcess.kill();
+        pythonProcess = null;
+        ApiResponse.success(res, { message: "Script termination requested." });
+    } else {
+        ApiResponse.badRequest(res, "No active script to terminate.");
+    }
+});
 
 export {router as webScrapeMarksRouter };

@@ -4,7 +4,7 @@ import dotenv from "dotenv";
 dotenv.config();
 
 import { Server } from "http";
-import app from "./app.js";
+import app, { server } from "./app.js";
 import "tsconfig-paths/register";
 import { logError, handleShutdown } from "./utils/server-helpers.js";
 import { logger } from "./utils/logger.js";
@@ -15,13 +15,12 @@ import chalk from "chalk";
  * Uses environment variable PORT or defaults to 8080.
  */
 const PORT: number = parseInt(process.env.PORT || "8080", 10);
-let server: Server;
 
 /**
  * Start the server and print available routes for debugging.
  */
 try {
-    server = app.listen(PORT, () => {
+    server.listen(PORT, () => {
         logger.server("Script Runner Server");
 
         logger.info("Available Routes:", "Server");

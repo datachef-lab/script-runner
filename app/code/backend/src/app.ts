@@ -8,8 +8,8 @@ import chalk from "chalk";
 import path from "path";
 import { logger } from "./middlewares/logger.middleware";
 import { corsOptions } from "./config/cors-options";
-// import http from 'http';
-// import { Server } from 'socket.io';
+import http from 'http';
+import { Server } from 'socket.io';
 
 import { approvalRouter } from "./routes/college-approval.route";
 import { webScrapeMarksRouter } from "./routes/web-scrape-marks.route";
@@ -17,9 +17,13 @@ import { webScrapeMarksRouter } from "./routes/web-scrape-marks.route";
 // const DOCUMENT_PATH = process.env.DOCUMENT_PATH!;
 
 const app = express();
-// const server = http.createServer(app);
-// const io = new Server(server);
+const server = http.createServer(app);
+const io = new Server(server, {
+    cors: corsOptions
+});
 
+// Export io instance to be used in routes
+export { io, server };
 
 app.use(logger);
 
@@ -122,10 +126,9 @@ app.get("/routes", (req, res) => {
     res.status(200).send(endpoints(app));
 });
 
-app.use("/college-approval", approvalRouter);
+app.use("/api/college-approval", approvalRouter);
 
-app.use("/web-scrape-marks", webScrapeMarksRouter);
-
+app.use("/api/web-scrape-marks", webScrapeMarksRouter);
 
 app.all("*", (req: Request, res: Response) => {
     res.status(404);

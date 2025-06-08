@@ -1,0 +1,62 @@
+# Node modules
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+/docs
+
+# Build output
+dist/
+build/
+*.tsbuildinfo
+
+# TypeScript cache
+*.tscache
+*.tsbuildinfo
+
+# Logs
+logs/
+*.log
+*.log.*
+pids/
+*.pid
+*.seed
+*.pid.lock
+
+# Debugging
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# Jest & Testing
+coverage/
+*.lcov
+.nyc_output/
+jest.*
+__tests__/temp/
+# Playwright / Cypress
+test-results/
+playwright-report/
+cypress/videos/
+cypress/screenshots/
+
+# IDE files
+.DS_Store
+Thumbs.db
+*.iml
+
+# Docker & Deployment
+docker-compose.override.yml
+/.docker
+
+# Misc
+tmp/
+temp/

@@ -1,0 +1,19 @@
+{
+  "name": "script-runner",
+  "version": "1.0.0",
+  "description": "Script Runner is a full-stack application designed to simplify the execution of multiple automation scripts — including Python and Node.js scripts — from a single unified interface. The app allows users to select, run, and monitor scripts directly through a web UI without needing to open terminal windows or access code files manually.",
+  "keywords": [
+    "scripts",
+    "run",
+    "terminal",
+    "automation",
+    "excel",
+    "files",
+    "data"
+  ],
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Harsh Nilesh Desi",
+  "license": "ISC"
+}

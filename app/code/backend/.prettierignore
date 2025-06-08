@@ -1,0 +1,18 @@
+# Ignore artifacts:
+build
+coverage
+
+/node_modules
+/dist
+/.vscode
+/.github
+/.husky
+/.idea
+/.nyc_output
+
+# Ignore all env files
+.env
+.env.local
+.env.development
+.env.test
+.env.production

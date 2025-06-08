@@ -1,0 +1,17 @@
+{
+    "compilerOptions": {
+        "target": "ES6",
+        "types": ["node", "express"],
+        "typeRoots": ["./node_modules/@types", "./src/types"],
+        "module": "CommonJS",
+        "moduleResolution": "node",
+        "outDir": "./dist",
+        "rootDir": "./src",
+        "strict": true,
+        "esModuleInterop": true,
+        "skipLibCheck": true,
+        "resolveJsonModule": true
+    },
+    "include": ["./drizzle.config.js", "./src/**/*", "./src/**/*.js", "src/types/express/index.d.ts"],
+    "exclude": ["dist", "node_modules"]
+}

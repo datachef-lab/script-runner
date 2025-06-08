@@ -12,6 +12,8 @@ dist/
 build/
 *.tsbuildinfo
 
+app/data/
+
 # TypeScript cache
 *.tscache
 *.tsbuildinfo
